@@ -1,0 +1,20 @@
+const fs=require('fs');
+const path=require('path');
+const root=path.resolve(__dirname,'..');
+const js=fs.readFileSync(path.join(root,'app/src/main/assets/app.js'),'utf8');
+const css=fs.readFileSync(path.join(root,'app/src/main/assets/style.css'),'utf8');
+const gradle=fs.readFileSync(path.join(root,'app/build.gradle'),'utf8');
+const workflow=fs.readFileSync(path.join(root,'.github/workflows/build.yml'),'utf8');
+function ok(c,m){if(!c)throw new Error(m);console.log(m+':OK')}
+ok(js.includes('function assetVisualHTML'),'asset-visual-helper');
+ok(js.includes('function assetLogoEditorHTMLV8131'),'asset-logo-editor');
+ok(js.includes('function bindAssetLogoEditorV8131'),'asset-logo-binding');
+ok(js.includes('id="assetLogoFileV8131"'),'asset-logo-file-input');
+ok(js.includes('id="removeAssetLogoV8131"'),'asset-logo-remove');
+ok(js.includes("logo:String(a.logo||'')"),'asset-logo-normalized');
+ok(js.includes("logo:String($('#assetLogoValueV8131')?.value||'')"),'asset-logo-saved');
+ok((js.match(/assetVisualHTML\(assetTab,x\)/g)||[]).length>=2,'asset-list-custom-logo');
+ok(css.includes('.asset-logo-preview-v8131'),'asset-logo-preview-css');
+ok(/versionCode\s+95/.test(gradle)&&/versionName\s+"8\.13\.1"/.test(gradle),'android-version-8.13.1');
+ok(workflow.includes('UangKu-v8.13.1-TEST-debug-apk'),'v8131-debug-artifact');
+ok(workflow.includes('node tests/asset-logo-v8131.js'),'asset-logo-test-workflow');

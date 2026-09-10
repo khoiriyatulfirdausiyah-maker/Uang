@@ -1,0 +1,20 @@
+const fs=require('fs');
+const path=require('path');
+const root=path.resolve(__dirname,'..');
+const js=fs.readFileSync(path.join(root,'app/src/main/assets/app.js'),'utf8');
+const css=fs.readFileSync(path.join(root,'app/src/main/assets/style.css'),'utf8');
+const gradle=fs.readFileSync(path.join(root,'app/build.gradle'),'utf8');
+const workflow=fs.readFileSync(path.join(root,'.github/workflows/build.yml'),'utf8');
+function ok(c,m){if(!c)throw new Error(m);console.log(m+':OK')}
+ok((js.match(/home-donut-standard-v8121/g)||[]).length>=3,'three-home-donuts-standardized');
+ok(js.includes('debtDonutColorsV8121'),'debt-palette-centralized');
+ok(js.includes('payablePct.toFixed(1)'),'debt-percentage-label');
+ok(js.includes('receivablePct.toFixed(1)'),'receivable-percentage-label');
+ok(css.includes('.home-donut-standard-v8121 .donut::after'),'shared-donut-hole');
+ok(css.includes('width:78px!important'),'desktop-hole-size');
+ok(css.includes('width:68px!important'),'small-phone-hole-size');
+ok(css.includes('.debt-dot-v70.payable{background:#F0B44C!important}'),'debt-legend-matches-gradient');
+ok(css.includes('.debt-dot-v70.receivable{background:#69A7FF!important}'),'receivable-legend-matches-gradient');
+ok(/versionCode\s+95/.test(gradle)&&/versionName\s+"8\.13\.1"/.test(gradle),'android-version-8.13.1');
+ok(workflow.includes('UangKu-v8.13.1-TEST-debug-apk'),'v8131-debug-artifact');
+ok(workflow.includes('node tests/donut-consistency-v8121.js'),'donut-test-in-workflow');

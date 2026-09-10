@@ -1,0 +1,334 @@
+# UangKu v8.13.1 — Custom Logo Investasi & Aset
+
+UangKu adalah aplikasi keuangan Android mobile-first berbasis WebView lokal.
+
+Versi 8.5 memperbaiki alur Foto Struk: tombol kamera membuka kamera Android secara langsung dan OCR membaca foto asli beresolusi tinggi, lalu menampilkan hasil untuk dicek sebelum dijadikan transaksi.
+
+## Fitur utama
+
+- Pemasukan, pengeluaran, transfer antar akun
+- Dashboard / Kekayaan Bersih / Saldo Akun / Financial Overview
+- Budget dan Target Keuangan
+- Investasi, properti, aset fisik
+- Multi akun: bank, e-wallet, cash, tabungan, titipan
+- Utang, piutang, Piutang Penjualan
+- Tagihan dengan jatuh tempo dan reminder
+- **Pengeluaran Rutin** tanpa jatuh tempo tetap
+- Edit & hapus transaksi
+- Asisten keuangan lokal berbasis teks
+- Laporan dan insight
+- Kategori kustom
+- Export / import JSON dengan versioned backup schema
+
+## Perubahan v8.13.1
+
+- Investasi, Properti, dan Aset Fisik sekarang bisa memakai **logo/gambar sendiri**.
+- Form Tambah/Edit memiliki tombol **Tambah logo / Ganti logo / Hapus logo**.
+- Jika logo custom dihapus, otomatis kembali ke ikon bawaan sesuai jenis aset.
+- Logo custom tampil langsung di daftar Investasi & Aset.
+- Gambar dikompresi sebelum disimpan agar aplikasi tetap ringan.
+- `versionCode = 95`, `versionName = 8.13.1`.
+
+## Perubahan v8.13
+
+- Setiap budget punya toggle **Gunakan juga untuk bulan berikutnya**.
+- Toggle aktif secara default supaya budget rutin tidak perlu dibuat ulang.
+- Yang dibawa hanya nominal/template budget, **pemakaian bulan sebelumnya tidak ikut**.
+- Bulan baru tetap bebas **Tambah, Edit, dan Hapus** budget.
+- Jika budget dihapus pada suatu bulan, UangKu tidak membuat ulang kategori itu pada bulan yang sama.
+- Perubahan bulan baru menjadi dasar bulan setelahnya selama toggle masih aktif.
+- Ada tombol **Salin bulan lalu** untuk menyalin kategori yang belum ada secara manual.
+- Histori budget bulan lama tidak ikut berubah.
+- `versionCode = 94`, `versionName = 8.13.0`.
+
+## Perubahan v8.12.1
+
+- Pie/donut **Utang & Piutang** disamakan geometri visualnya dengan donut **Budget** dan **Penjualan**.
+- Ketiga donut Beranda memakai ukuran luar, lubang tengah, posisi label, dan rasio 1:1 yang sama.
+- Ukuran tetap konsisten pada layar kecil.
+- Warna legenda Utang/Piutang sekarang persis sama dengan warna irisan donut.
+- Ditambahkan persentase Utang dan Piutang agar komposisi visual mudah diverifikasi.
+- Rumus nilai utang/piutang tidak diubah.
+- `versionCode = 93`, `versionName = 8.12.1`.
+
+## Perubahan v8.12
+
+- `save()` tidak lagi menulis seluruh JSON ke localStorage di jalur klik utama. Penyimpanan dijadwalkan saat browser idle dan dipaksa flush saat aplikasi disembunyikan/ditutup.
+- Halaman Transaksi memakai **append pagination sungguhan**: tombol Muat Lagi hanya menambahkan batch baru, bukan merender ulang semua transaksi yang sudah tampil.
+- Pagination Transaksi otomatis kembali ke 60 item saat masuk ulang ke halaman.
+- Total saldo, tabungan, aset, utang/piutang, dan alokasi target memakai cache agregat bersama.
+- Rekap Budget per bulan memakai cache bersama untuk Beranda dan halaman Budget.
+- Pergantian halaman/tab dan beberapa perubahan UI dijadwalkan ke animation frame agar sentuhan terasa lebih responsif.
+- `content-visibility:auto` dihapus karena dapat menyebabkan repaint/scroll tersendat pada sebagian Android WebView.
+- Logo akun/Target baru dikompresi lebih kecil sebelum disimpan untuk menahan pertumbuhan ukuran state.
+- Ikon launcher dompet hijau + daun dari v8.11 tetap dipakai.
+- `versionCode = 92`, `versionName = 8.12.0`.
+
+## Perubahan v8.11
+
+- Cache analitik bulanan: ringkasan Beranda, penjualan, saving rate, komposisi pengeluaran, dan pemakaian budget berbagi hasil hitung yang sama.
+- 5 transaksi terakhir memakai cache transaksi terurut.
+- Halaman Transaksi memakai pagination 60 item + **Muat lagi** sehingga tidak membuat ribuan DOM sekaligus.
+- Budget memakai cache pemakaian per bulan/per kategori.
+- Toggle sembunyikan saldo dan buka/tutup Ringkasan Beranda tidak lagi me-render seluruh halaman.
+- CSS mati dari Voice/Foto Struk dibersihkan; exact duplicate rule yang identik dibuang tanpa mengubah tampilan aktif.
+- Benchmark diperketat hingga dataset sintetis 10.000 transaksi.
+- Ikon launcher Android diganti dengan ikon dompet hijau + daun yang diberikan pengguna.
+- UI utama dipertahankan.
+- `versionCode = 91`, `versionName = 8.11.0`.
+
+## Perubahan v8.10
+
+### Kategori dipisahkan berdasarkan jenis transaksi
+- Saat memilih **Pemasukan**, hanya kategori pemasukan yang ditampilkan.
+- Saat memilih **Pengeluaran**, hanya kategori pengeluaran yang ditampilkan.
+- Halaman **Kategori** sekarang punya tab **Pemasukan | Pengeluaran**.
+- Kategori custom bisa ditentukan untuk Pemasukan, Pengeluaran, atau keduanya.
+
+### Kategori Pemasukan bawaan
+- Gaji
+- Bonus / THR
+- Penjualan
+- Pendapatan Usaha
+- Piutang Dibayar
+- Pinjaman Masuk
+- Refund / Pengembalian Dana
+- Lainnya
+
+### Kategori Pengeluaran bawaan
+- Makan & Minum
+- Groceries
+- Transportasi & Bensin
+- Listrik & Utilitas
+- Pakan Hewan
+- Belanja Pribadi
+- Hadiah
+- Hiburan
+- Kantor
+- Tagihan & Langganan
+- Keperluan Usaha / Modal Penjualan
+- Cicilan & Bayar Utang
+- Penyesuaian Saldo
+- Lainnya
+
+`Keperluan Usaha / Modal Penjualan` cocok untuk deposit/saldo pulsa, stok jualan, bahan dimsum, frozen food, dan modal dagangan lainnya.
+
+Data kategori lama dimigrasikan tanpa menghapus transaksi. `versionCode = 90`, `versionName = 8.10.0`.
+
+## Perubahan v8.9
+
+- Fitur **Foto Struk** dihapus seluruhnya.
+- Tombol Tambah (+) sekarang langsung membuka form transaksi manual.
+- Menu Foto Struk di **Lainnya** dihapus.
+- Route, UI, parser OCR, kamera/galeri scanner, dan callback receipt dihapus.
+- ML Kit Text Recognition dan FileProvider khusus struk dihapus dari APK.
+- Fitur Voice tetap tidak ada seperti v8.8.
+- Asisten teks dan seluruh fitur keuangan lainnya tetap dipertahankan.
+- `versionCode = 89`, `versionName = 8.9.0`.
+
+## Perubahan v8.8
+
+- Fitur Voice dihapus seluruhnya.
+- Tombol mikrofon di Asisten dihapus; Asisten tetap bisa dipakai lewat ketikan.
+- Opsi **Voice AI** pada tombol Tambah dihapus.
+- Halaman **Catat dengan Suara** dihapus.
+- Permission mikrofon (`RECORD_AUDIO`), Android `SpeechRecognizer`, fallback speech service, dan Text-to-Speech dihapus dari APK.
+- Riwayat error voice lama yang dibuat aplikasi dibersihkan satu kali tanpa menghapus percakapan normal.
+- Foto Struk, Asisten teks, OCR, budget, akun, transaksi, utang/tagihan/rutin, tema gelap/terang, dan fitur lainnya tetap dipertahankan.
+- `versionCode = 88`, `versionName = 8.8.0`.
+
+## Perubahan v8.7
+
+- Memperbaiki kasus halaman voice muncul sebentar lalu langsung tertutup.
+- Callback SpeechRecognizer lama tidak boleh lagi menghentikan sesi voice baru.
+- Jika recognizer langsung gagal, UangKu otomatis mencoba pengenal suara Android sistem.
+- Error voice tetap berada di halaman Voice dan menampilkan tombol **Coba lagi**.
+- Membatalkan voice mengembalikan pengguna ke Asisten tanpa menambah bubble error.
+- `versionCode = 87`, `versionName = 8.7.0`.
+
+## Perubahan v8.6
+
+### Foto Struk lebih akurat
+- Nominal transaksi diprioritaskan dari **TOTAL BELANJA / GRAND TOTAL / TOTAL BAYAR / TOTAL PEMBAYARAN / TOTAL**.
+- Tunai/Cash, kembalian, QRIS, kartu, diskon, pajak, dan nomor referensi tidak dianggap sebagai total belanja.
+- Tanggal struk membaca format `08/09/2026`, `08/09/26`, `2026-09-08`, hingga `8 September 2026`.
+- Nama barang pada struk diekstrak menjadi **Catatan / Nama Belanjaan** dan otomatis dimasukkan ke catatan transaksi.
+- Hasil scan menampilkan sumber nominal supaya lebih mudah dicek.
+
+### Foto Struk lebih ringan
+- OCR foto asli dan pembuatan thumbnail preview berjalan paralel.
+- OCR tidak lagi menunggu proses kompres preview selesai.
+- Thumbnail preview diturunkan ke sekitar 900px / JPEG 68 karena hanya untuk tampilan; OCR tetap memakai URI foto asli.
+- Data URI foto tidak lagi ditempel langsung ke HTML saat render halaman.
+- Blur overlay scanner dihapus.
+
+### Respons aplikasi
+- Menambahkan lazy rendering (`content-visibility`) untuk kartu/section di bawah layar.
+- Shadow kartu dibuat lebih ringan untuk mengurangi repaint di Android WebView.
+- `versionCode = 86`, `versionName = 8.6.0`.
+
+## Perubahan v8.5
+
+### Voice Assistant Android
+- Mikrofon sekarang memakai **Android SpeechRecognizer langsung di dalam aplikasi**.
+- Menambahkan query service recognition untuk Android 11+ dan fallback `RecognizerIntent`.
+- Hasil ucapan parsial ditampilkan saat bicara.
+- Tombol stop menghentikan recognizer native.
+- Error voice tidak lagi disimpan sebagai bubble chat berulang.
+- Spam error teknis lama yang identik dibersihkan satu kali.
+- Pesan error dibedakan untuk izin mikrofon, koneksi, tidak ada ucapan, recognizer sibuk, dan server.
+- `versionCode = 85`, `versionName = 8.5.0`.
+
+## Perubahan v8.4
+
+### Kamera struk langsung
+- Tombol **Ambil Foto dari Kamera** memakai `ACTION_IMAGE_CAPTURE`, jadi pada APK tidak lagi masuk ke pemilih galeri.
+- Foto kamera disimpan sementara melalui Android `FileProvider`.
+- Tombol **Pilih dari Galeri** tetap terpisah dan khusus membuka gambar.
+
+### OCR struk lebih akurat
+- ML Kit sekarang membaca **URI foto asli** dari kamera/galeri, bukan hanya JPEG 1280px yang sudah dikompres.
+- Orientasi foto dipertahankan untuk OCR dan preview dikoreksi memakai metadata EXIF.
+- Setelah foto dipilih, OCR berjalan otomatis.
+- Tombol **Scan Ulang** tetap tersedia.
+
+### Deteksi total yang lebih aman
+- Parser tidak lagi sekadar mengambil angka terbesar di struk.
+- Baris seperti **GRAND TOTAL, TOTAL BAYAR, TOTAL BELANJA, JUMLAH BAYAR** diprioritaskan.
+- **Tunai/Cash, Kembalian/Change, Diskon, PPN/Tax, nomor invoice/member/telepon** tidak dianggap total belanja.
+- Format `25.000`, `25,000`, `25.000,00`, dan `25,000.00` didukung.
+
+### Review sebelum transaksi
+Hasil scan menampilkan:
+- merchant/toko,
+- total belanja,
+- tanggal,
+- kategori.
+
+Pengguna dapat mengoreksi hasil sebelum menekan **Gunakan Hasil Scan**, lalu UangKu mengisi form transaksi pengeluaran.
+
+### Build
+- `versionCode = 84`, `versionName = 8.4.0`.
+- Menambahkan `tests/receipt-scanner.js`.
+
+## Perubahan v8.3
+
+- Event binding dibatasi per halaman agar klik tidak memindai semua tombol aplikasi.
+- Navigasi tidak lagi menjalankan smooth scroll setelah tap.
+- Saldo akun serta data transaksi bulanan memakai cache runtime yang otomatis dibersihkan saat data berubah.
+- `touch-action: manipulation` untuk respons tap yang lebih langsung.
+- Backdrop blur pada header dan bottom navigation dihapus karena berat pada sebagian WebView Android.
+- Hardware acceleration WebView dipastikan aktif.
+- Over-scroll dan scrollbar WebView yang tidak perlu dimatikan.
+- Fix duplicate Kotlin stdlib dimasukkan ke project agar build GitHub tetap aman.
+- GitHub Actions checkout/setup-java diperbarui.
+- Menambahkan `tests/performance-smoke.js`.
+- `versionCode = 83`, `versionName = 8.3.0`.
+
+## Perubahan v8.2
+
+### Tema Terang / Gelap
+- Tombol tema ada di **Beranda pojok kanan atas**, di sebelah ikon notifikasi.
+- Ikon **matahari** menandakan mode terang.
+- Ikon **bulan** menandakan mode gelap.
+- Klik ikon untuk berpindah tema.
+- Pilihan tema tersimpan di perangkat dan tetap sama saat aplikasi dibuka kembali.
+- Mode gelap mencakup Beranda, kartu, form, modal, bottom navigation, Asisten, Budget/Target, Utang/Tagihan/Rutin, dan halaman utama lainnya.
+- `versionCode = 82`, `versionName = 8.2.0`.
+
+## Perubahan v8.1
+
+### 1. Tanggal lokal perangkat
+Tanggal transaksi default tidak lagi memakai tanggal UTC. UangKu sekarang memakai tanggal lokal perangkat, sehingga transaksi yang dibuat setelah tengah malam WIB tidak bergeser ke hari sebelumnya.
+
+### 2. Tagihan vs Pengeluaran Rutin
+Menu **Utang & Tagihan** sekarang memiliki tiga tab:
+
+- **Utang** — kewajiban/sisa pinjaman atau piutang.
+- **Tagihan** — pembayaran dengan jatuh tempo, seperti WiFi/BPJS/air pascabayar.
+- **Rutin** — pengeluaran berulang dengan tanggal fleksibel, seperti token listrik, bensin, dan pakan hewan.
+
+Pengeluaran Rutin tidak otomatis mengurangi saldo. Saldo baru berubah saat tombol **Catat sekarang** digunakan.
+
+### 3. Reminder tahan restart/update
+Data reminder Tagihan disimpan juga di Android SharedPreferences. Setelah HP restart atau aplikasi di-update, `BillBootReceiver` menjadwalkan ulang reminder yang masih aktif.
+
+### 4. Backup schema v81
+Export JSON sekarang memakai envelope:
+
+- `format: UangKuBackup`
+- `schemaVersion: 81`
+- `appVersion: 8.1.0`
+- `exportedAt`
+- `data`
+
+Import lama tetap didukung. Backup dari versi yang lebih baru akan ditolak agar data tidak rusak. Sebelum import mengganti data aktif, UangKu menampilkan ringkasan isi backup untuk konfirmasi.
+
+### 5. WebView hardening
+- Universal access dari file URL dimatikan.
+- File-to-file access dari halaman lokal dimatikan.
+- Mixed content diblokir.
+- Cleartext HTTP dinonaktifkan pada manifest.
+- Link web eksternal dibuka di browser luar, bukan di WebView yang memiliki Android bridge.
+- Android automatic backup dimatikan; gunakan Export JSON agar backup berada dalam kontrol pengguna.
+
+### 6. Event binding dibersihkan
+`bindPage()` sekarang merupakan satu alur final. Binding lama yang sebelumnya kemudian ditimpa binding lain sudah dihapus.
+
+### 7. Jalur signed release untuk update APK
+`versionCode = 81`, `versionName = 8.1.0`.
+
+GitHub Actions selalu membuat debug APK untuk pengujian. Jika 4 signing secret telah dipasang, workflow juga menghasilkan artifact:
+
+`UangKu-v8.13.1-SIGNED-release-apk`
+
+Gunakan release APK untuk instalasi harian dan update selanjutnya. Lihat **SIGNING_SETUP.md**.
+
+> Jika APK yang sekarang terpasang masih debug lama, export JSON terlebih dahulu, uninstall debug sekali, install signed release, lalu import JSON. Setelah berpindah ke release, update berikutnya dapat dipasang di atas aplikasi lama selama signing key tetap sama.
+
+## Test otomatis
+
+Workflow menjalankan:
+
+```bash
+node tests/code-health.js
+node tests/finance-smoke.js
+node tests/daily-hardening.js
+```
+
+Test meliputi:
+
+- tidak ada deklarasi fungsi global ganda;
+- `bindPage()` hanya memiliki satu handler final untuk form transaksi;
+- seluruh halaman utama dapat dirender;
+- transfer tidak mengubah Kekayaan Bersih;
+- bayar utang / menerima piutang tidak menggandakan kekayaan;
+- Piutang Penjualan memisahkan omzet, kas diterima, dan sisa piutang;
+- Saving Rate tidak menghitung ulang dana target lama;
+- rincian Budget sesuai bulan dan kategori;
+- parser voice nominal bahasa Indonesia;
+- tanggal lokal WIB di sekitar pergantian hari UTC;
+- legacy backup bermigrasi ke schema 81;
+- backup schema yang lebih baru ditolak;
+- data Pengeluaran Rutin terhubung ke transaksi;
+- konfigurasi WebView security;
+- persistence dan re-scheduling Tagihan setelah restart;
+- konfigurasi signed release.
+
+## Build APK lewat GitHub
+
+1. Upload seluruh isi folder ini ke repository GitHub.
+2. Buka **Actions → Build Android APK**.
+3. Jalankan workflow.
+4. Untuk testing, artifact debug selalu tersedia.
+5. Untuk APK harian yang bisa di-update, setup signing sekali mengikuti **SIGNING_SETUP.md**, lalu unduh artifact signed release.
+
+## Penyimpanan data
+
+Data utama masih disimpan lokal melalui `localStorage` WebView untuk menjaga kompatibilitas dengan data versi sebelumnya. Backup JSON berkala tetap disarankan.
+
+## Catatan OCR & Voice
+
+- OCR memakai Google ML Kit dan hasil tetap perlu dicek sebelum transaksi disimpan.
+- Voice memakai Android Speech Recognizer bahasa Indonesia.
+- Jawaban voice Asisten dapat dibacakan lewat Text-to-Speech Android.

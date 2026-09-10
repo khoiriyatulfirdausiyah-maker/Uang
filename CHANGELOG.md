@@ -1,0 +1,175 @@
+# Changelog
+
+## 8.13.1 — Custom Asset Logo
+
+- Added custom image/logo for Investment, Property, and Physical Assets.
+- Added add/change/remove logo controls and fallback icons.
+- Added `tests/asset-logo-v8131.js`.
+- `versionCode` 95 / `versionName` 8.13.1.
+
+## 8.13.0 — Recurring Budget
+
+- Added per-budget carry-forward option.
+- Automatically copies enabled budgets to the next month.
+- Added manual **Salin bulan lalu** action.
+- Added monthly skip markers so deleted budgets are not recreated.
+- Current month budgets remain independently editable/addable/deletable.
+- Added `tests/recurring-budget-v813.js`.
+- `versionCode` 94 / `versionName` 8.13.0.
+
+## 8.12.1 — Donut Chart Consistency Fix
+
+- Standardized Budget, Penjualan, and Utang & Piutang home donut geometry.
+- Fixed 1:1 circle sizing and identical center-hole sizing.
+- Matched debt/receivable legend colors exactly to donut slices.
+- Added debt/receivable percentage labels.
+- Added `tests/donut-consistency-v8121.js`.
+- `versionCode` 93 / `versionName` 8.12.1.
+
+## 8.12.0 — Android Responsiveness Fix
+
+- Deferred localStorage persistence with lifecycle flush.
+- True append-only transaction pagination and reset-on-entry.
+- Shared finance totals and monthly budget caches.
+- Scheduled UI rendering for common interactions.
+- Removed Android WebView `content-visibility:auto` usage.
+- Smaller WebP compression for newly selected account/goal images.
+- Added `tests/responsiveness-v812.js`.
+- `versionCode` 92 / `versionName` 8.12.0.
+
+## 8.11.0 — Performance Rebuild
+
+- Shared month analytics cache.
+- Cached recent/sorted transaction lists.
+- Transaction pagination at 60 rows per page.
+- Cached budget usage by month/category.
+- Partial DOM refresh for balance privacy and home summary expansion.
+- Removed stale Voice/Receipt CSS and 0 exact duplicate CSS rules.
+- Added 10,000-transaction performance regression test.
+- Replaced launcher icon with user-provided green wallet/leaf artwork.
+- `versionCode` 91 / `versionName` 8.11.0.
+
+## 8.10.0 — Category Split
+
+- Memisahkan kategori Pemasukan dan Pengeluaran.
+- Menambahkan `categoryTypes` dengan tipe income / expense / both.
+- Menambahkan tab Pemasukan dan Pengeluaran pada Kelola Kategori.
+- Budget dan Pengeluaran Rutin hanya memakai kategori Pengeluaran.
+- Memisahkan `Pinjaman Masuk` dari `Cicilan & Bayar Utang`.
+- Menambahkan `Keperluan Usaha / Modal Penjualan` untuk modal jualan termasuk deposit pulsa.
+- Migrasi kategori lama dilakukan satu kali tanpa menghapus histori.
+- Menambahkan `tests/category-split.js`.
+- `versionCode` 90 / `versionName` 8.10.0.
+
+## 8.9.0 — Manual Input Only
+
+- Menghapus fitur Foto Struk.
+- Menghapus kamera/galeri scanner dan OCR receipt.
+- Menghapus ML Kit Text Recognition dan FileProvider receipt.
+- Tombol Tambah langsung membuka transaksi manual.
+- Menghapus receipt tests dari workflow.
+- Voice tetap dihapus.
+- `versionCode` 89 / `versionName` 8.9.0.
+
+## 8.8.0 — No Voice
+
+- Menghapus Voice AI dari UangKu.
+- Menghapus tombol mikrofon dari Asisten.
+- Menghapus Voice AI dari quick-add.
+- Menghapus halaman dan route voice.
+- Menghapus RECORD_AUDIO, SpeechRecognizer, speech-service queries, dan TextToSpeech dari Android.
+- Asisten teks tetap aktif.
+- Menambahkan `tests/no-voice.js`.
+- `versionCode` 88 / `versionName` 8.8.0.
+
+## 8.7.0 — Voice Recovery
+
+- Memperbaiki race condition SpeechRecognizer yang dapat membuat halaman voice langsung berhenti.
+- Menambahkan session token untuk mengabaikan callback sesi lama.
+- Menambahkan fallback otomatis ke pengenal suara Android sistem.
+- Error voice tidak lagi langsung menutup halaman Voice.
+- Menambahkan tombol Coba lagi.
+- Menambahkan `tests/voice-recovery.js`.
+- `versionCode` 87 / `versionName` 8.7.0.
+
+## 8.6.0 — Receipt Accuracy & Performance
+
+- Total belanja diprioritaskan dari label total dan mengecualikan cash/tender/change/payment noise.
+- Tanggal OCR mendukung tahun 2/4 digit dan nama bulan Indonesia/Inggris.
+- Nama barang diekstrak sebagai catatan transaksi.
+- OCR dan thumbnail preview berjalan paralel.
+- Preview scanner diturunkan ke 900px/JPEG 68 tanpa menurunkan resolusi OCR.
+- Menghindari data URI besar di template render receipt.
+- Menambahkan content-visibility dan shadow lebih ringan untuk mengurangi repaint.
+- Menambahkan `tests/receipt-accuracy.js`.
+- `versionCode` 86 / `versionName` 8.6.0.
+
+## 8.5.0 — Native Voice Fix
+
+- Mengganti jalur utama voice ke Android `SpeechRecognizer` native.
+- Menambahkan `RecognitionListener`, partial result, dan stop/cancel native.
+- Menambahkan manifest query untuk speech recognition + fallback RecognizerIntent.
+- Error voice tidak lagi memenuhi riwayat chat.
+- Membersihkan spam error teknis lama satu kali.
+- Menambahkan `tests/native-voice.js`.
+- `versionCode` 85 / `versionName` 8.5.0.
+
+## 8.4.0 — Receipt Scanner
+
+- Tombol kamera Foto Struk sekarang membuka kamera Android langsung lewat `ACTION_IMAGE_CAPTURE`.
+- Menambahkan FileProvider untuk foto kamera sementara.
+- Galeri dipisahkan ke `ACTION_OPEN_DOCUMENT`.
+- OCR ML Kit membaca URI foto asli agar teks kecil pada struk tidak hilang karena kompresi awal.
+- Preview foto dikoreksi berdasarkan orientasi EXIF.
+- OCR berjalan otomatis setelah kamera/galeri selesai.
+- Parser total struk memprioritaskan GRAND TOTAL / TOTAL BAYAR dan mengabaikan Cash/Tunai, Kembalian, Diskon, Pajak, serta nomor referensi.
+- Menambahkan halaman review hasil scan sebelum transaksi dibuat.
+- Menambahkan `tests/receipt-scanner.js`.
+- `versionCode` 84 / `versionName` 8.4.0.
+
+## 8.3.0 — Responsif & Ringan
+
+- Page-scoped event binding.
+- Cache runtime saldo akun dan transaksi bulanan.
+- Tap/navigasi dibuat lebih langsung.
+- Backdrop blur berat dihapus.
+- WebView hardware acceleration dipastikan aktif.
+- Fix Kotlin duplicate classes dimasukkan.
+- Performance smoke test ditambahkan.
+- versionCode 83 / versionName 8.3.0.
+
+## 8.2.0 — Tema Terang & Gelap
+
+- Menambahkan tombol tema di Beranda pojok kanan atas.
+- Ikon matahari menunjukkan mode terang; ikon bulan menunjukkan mode gelap.
+- Tema tersimpan di perangkat dan dipulihkan saat aplikasi dibuka kembali.
+- Menambahkan dark theme untuk kartu, form, modal, bottom navigation, carousel keuangan, Asisten, serta modul utama.
+- Warna `theme-color` ikut menyesuaikan tema.
+- Menambahkan `tests/theme-mode.js`.
+- `versionCode` menjadi `82`; `versionName` menjadi `8.2.0`.
+
+## 8.1.0 — Daily Use Hardening
+
+- Tanggal default memakai timezone lokal perangkat, bukan UTC.
+- Menambahkan tab **Pengeluaran Rutin** untuk token listrik, bensin, pakan hewan, dan kebutuhan fleksibel lain.
+- Menambahkan `BillReminderScheduler` + `BillBootReceiver` agar reminder Tagihan dijadwalkan ulang setelah restart/update aplikasi.
+- Menambahkan backup envelope schema `81` dan validasi import sebelum mengganti data aktif.
+- Mempertahankan kompatibilitas import JSON versi lama.
+- WebView diperketat: universal file access dan mixed content dimatikan; link eksternal dibuka di browser luar.
+- Android automatic backup dan cleartext traffic dimatikan.
+- `bindPage()` dikonsolidasikan menjadi satu set event binding final; binding yang saling menimpa dibuang.
+- Menghapus bridge voice lama yang sudah ditimpa implementasi voice final.
+- Menambahkan konfigurasi release signing melalui GitHub Actions Secrets.
+- Menambahkan `SIGNING_SETUP.md`.
+- Menambahkan `tests/daily-hardening.js`.
+- `versionCode` menjadi `81`; `versionName` menjadi `8.1.0`.
+
+## 8.0.0 — Clean & Stable
+
+- 122 deklarasi fungsi lama yang tertimpa dihapus.
+- Semua deklarasi fungsi global dibuat unik.
+- 13 lapis override `bindPage` dikonsolidasikan.
+- Wrapper transaksi/piutang lama dirapikan.
+- Helper lama yang tidak dipakai dibuang.
+- Bug laten modal Target diperbaiki.
+- Test code-health dan finance-smoke ditambahkan.
