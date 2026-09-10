@@ -3,22 +3,24 @@ name: Build Android APK
 on:
   workflow_dispatch:
   push:
-    branches: ["main", "master"]
+    branches:
+      - main
+      - master
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v5
 
-      - name: Setup Node 20
+      - name: Setup Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: "20"
 
-      - name: UangKu code health
+      - name: UangKu code health tests
         run: node tests/code-health.js
 
       - name: UangKu finance smoke tests
@@ -57,6 +59,9 @@ jobs:
       - name: UangKu asset logo tests
         run: node tests/asset-logo-v8131.js
 
+      - name: UangKu debt chart spacing tests
+        run: node tests/debt-chart-spacing-v8132.js
+
       - name: UangKu launcher icon tests
         run: node tests/launcher-icon.js
 
@@ -69,7 +74,7 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Install SDK packages
+      - name: Install Android SDK packages
         run: |
           sdkmanager "platforms;android-35" "build-tools;35.0.0"
 
@@ -89,7 +94,10 @@ jobs:
           KEY_ALIAS: ${{ secrets.UANGKU_KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.UANGKU_KEY_PASSWORD }}
         run: |
-          if [ -n "$KEYSTORE_B64" ] && [ -n "$STORE_PASSWORD" ] && [ -n "$KEY_ALIAS" ] && [ -n "$KEY_PASSWORD" ]; then
+          if [ -n "$KEYSTORE_B64" ] && \
+             [ -n "$STORE_PASSWORD" ] && \
+             [ -n "$KEY_ALIAS" ] && \
+             [ -n "$KEY_PASSWORD" ]; then
             echo "ready=true" >> "$GITHUB_OUTPUT"
           else
             echo "ready=false" >> "$GITHUB_OUTPUT"
@@ -115,7 +123,7 @@ jobs:
       - name: Upload test/debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: UangKu-v8.13.1-TEST-debug-apk
+          name: UangKu-v8.13.2-TEST-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
 
@@ -123,6 +131,6 @@ jobs:
         if: steps.signing.outputs.ready == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: UangKu-v8.13.1-SIGNED-release-apk
+          name: UangKu-v8.13.2-SIGNED-release-apk
           path: app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
