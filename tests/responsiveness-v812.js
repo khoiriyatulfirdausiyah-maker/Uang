@@ -28,9 +28,9 @@ ok(src.includes("insertAdjacentHTML('beforeend'"),'transaction-append-dom');
 ok(src.includes("next==='transactions'&&currentPage!=='transactions'"),'pagination-reset-on-entry');
 ok(!css.includes('content-visibility:auto'),'android-content-visibility-auto-removed');
 ok(css.includes('content-visibility:visible!important'),'transaction-content-visibility-explicit');
-ok(/versionCode\s+95/.test(gradle)&&/versionName\s+"8\.13\.1"/.test(gradle),'android-version-8.13.1');
-ok(workflow.includes('UangKu-v8.13.1-TEST-debug-apk'),'v8131-debug-artifact');
-ok(workflow.includes('UangKu-v8.13.1-SIGNED-release-apk'),'v8131-signed-artifact');
+ok(/versionCode\s+96/.test(gradle)&&/versionName\s+"8\.13\.2"/.test(gradle),'android-version-8.13.2');
+ok(workflow.includes('UangKu-v8.13.2-TEST-debug-apk'),'v8132-debug-artifact');
+ok(workflow.includes('UangKu-v8.13.2-SIGNED-release-apk'),'v8131-signed-artifact');
 ok(workflow.includes('node tests/responsiveness-v812.js'),'responsiveness-workflow-test');
 
 let writes=0;

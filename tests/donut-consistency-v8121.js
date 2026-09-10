@@ -15,6 +15,6 @@ ok(css.includes('width:78px!important'),'desktop-hole-size');
 ok(css.includes('width:68px!important'),'small-phone-hole-size');
 ok(css.includes('.debt-dot-v70.payable{background:#F0B44C!important}'),'debt-legend-matches-gradient');
 ok(css.includes('.debt-dot-v70.receivable{background:#69A7FF!important}'),'receivable-legend-matches-gradient');
-ok(/versionCode\s+95/.test(gradle)&&/versionName\s+"8\.13\.1"/.test(gradle),'android-version-8.13.1');
-ok(workflow.includes('UangKu-v8.13.1-TEST-debug-apk'),'v8131-debug-artifact');
+ok(/versionCode\s+96/.test(gradle)&&/versionName\s+"8\.13\.2"/.test(gradle),'android-version-8.13.2');
+ok(workflow.includes('UangKu-v8.13.2-TEST-debug-apk'),'v8132-debug-artifact');
 ok(workflow.includes('node tests/donut-consistency-v8121.js'),'donut-test-in-workflow');

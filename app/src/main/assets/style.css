@@ -3230,3 +3230,58 @@ html[data-theme="dark"] .budget-repeat-chip-v813{background:#203B2A;color:#7BDD8
 .asset-logo-actions-v8131 small{width:100%;color:var(--muted);font-size:7.5px;line-height:1.4}
 html[data-theme="dark"] .asset-logo-preview-v8131{background:#332E20}
 @media(max-width:380px){.asset-logo-editor-v8131{align-items:flex-start}.asset-logo-preview-v8131{width:52px;height:52px;flex-basis:52px}}
+
+
+/* ===== UANGKU v8.13.2 — UTANG & PIUTANG CHART SPACING =====
+   Jaga jarak donut dengan teks agar tidak menempel pada layar HP. */
+.home-debt-body-v70{
+  display:grid!important;
+  grid-template-columns:115px minmax(0,1fr)!important;
+  column-gap:18px!important;
+  align-items:center!important;
+}
+
+.home-debt-donut-v70{
+  margin:0!important;
+  justify-self:start!important;
+}
+
+.home-debt-stats-v70{
+  min-width:0!important;
+  padding-left:0!important;
+}
+
+.home-debt-stats-v70 .debt-stat-row-v70,
+.home-debt-stats-v70 .row,
+.home-debt-stats-v70 > div{
+  min-width:0;
+}
+
+@media(min-width:381px){
+  .home-debt-body-v70{
+    grid-template-columns:132px minmax(0,1fr)!important;
+    column-gap:22px!important;
+  }
+}
+
+@media(max-width:380px){
+  .home-debt-body-v70{
+    grid-template-columns:108px minmax(0,1fr)!important;
+    column-gap:14px!important;
+  }
+
+  .home-debt-donut-v70,
+  .home-debt-donut-v70 .donut{
+    width:108px!important;
+    height:108px!important;
+    min-width:108px!important;
+    min-height:108px!important;
+    max-width:108px!important;
+    max-height:108px!important;
+  }
+
+  .home-debt-donut-v70 .donut::after{
+    width:64px!important;
+    height:64px!important;
+  }
+}

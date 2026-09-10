@@ -23,4 +23,4 @@ ok(!gradle.includes('text-recognition'),'mlkit-dependency-removed');
 ok(!workflow.includes('receipt-scanner.js'),'receipt-workflow-removed');
 ok(!workflow.includes('receipt-accuracy.js'),'receipt-accuracy-workflow-removed');
 ok(js.includes("function openQuickAddMenu(){\n  manualTxType='income';\n  navigate('addTransaction');"),'plus-direct-manual');
-ok(workflow.includes('UangKu-v8.13.1-TEST-debug-apk'),'v8131-debug-artifact');
+ok(workflow.includes('UangKu-v8.13.2-TEST-debug-apk'),'v8132-debug-artifact');

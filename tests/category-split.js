@@ -30,7 +30,7 @@ ok(src.includes("Tagihan & Langganan"),'expense-bills');
 ok(src.includes("data-category-tab-v810"),'category-manager-tabs');
 ok(src.includes("categoriesForTypeV810(selectedType)"),'new-transaction-filtered');
 ok(src.includes("transactionCategoryOptionsV810(b?.category||'','expense')"),'budget-expense-only');
-ok(/versionCode\s+95/.test(gradle)&&/versionName\s+"8\.13\.1"/.test(gradle),'android-version-8.13.1');
+ok(/versionCode\s+96/.test(gradle)&&/versionName\s+"8\.13\.2"/.test(gradle),'android-version-8.13.2');
 
 const dummy={
  classList:{toggle(){},add(){},remove(){}},

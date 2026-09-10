@@ -14,8 +14,8 @@ ok(src.includes('function requestDeleteBudgetV813'),'delete-budget-skip-helper')
 ok(src.includes('name="carryForward"'),'carry-forward-toggle');
 ok(src.includes('Salin bulan lalu'),'copy-previous-button');
 ok(src.includes('↻ lanjut bulan depan'),'recurring-chip');
-ok(/versionCode\s+95/.test(gradle)&&/versionName\s+"8\.13\.1"/.test(gradle),'android-version-8.13.1');
-ok(workflow.includes('UangKu-v8.13.1-TEST-debug-apk'),'v8131-debug-artifact');
+ok(/versionCode\s+96/.test(gradle)&&/versionName\s+"8\.13\.2"/.test(gradle),'android-version-8.13.2');
+ok(workflow.includes('UangKu-v8.13.2-TEST-debug-apk'),'v8132-debug-artifact');
 ok(workflow.includes('node tests/recurring-budget-v813.js'),'recurring-workflow-test');
 const dummy={classList:{toggle(){},add(){},remove(){}},style:{},dataset:{},textContent:'',value:'',innerHTML:'',click(){},focus(){},setAttribute(){},addEventListener(){},querySelectorAll(){return[]},querySelector(){return null},closest(){return null},scrollTo(){},clientWidth:320,scrollLeft:0,scrollHeight:0};
 const storage={};

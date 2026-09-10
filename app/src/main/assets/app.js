@@ -1,10 +1,10 @@
-/* UangKu v8.13.1 Custom Asset Logo + Recurring Budget + Donut Consistency Fix + Android Responsiveness Fix + Performance Rebuild + Category Split + Manual Input Only + Theme + Daily Use Hardening
+/* UangKu v8.13.2 Debt Chart Spacing Fix + Custom Asset Logo + Recurring Budget + Donut Consistency Fix + Android Responsiveness Fix + Performance Rebuild + Category Split + Manual Input Only + Theme + Daily Use Hardening
    Stable runtime with local-device dates, versioned backups, recurring flexible expenses,
    hardened Android integration, and consolidated event bindings. */
 
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const fmt=n=>'Rp '+Math.round(Number(n||0)).toLocaleString('id-ID');
-const APP_VERSION='8.13.1';
+const APP_VERSION='8.13.2';
 const BACKUP_SCHEMA_VERSION=81;
 function localDateISO(date=new Date()){
  const d=date instanceof Date?date:new Date(date);
@@ -5328,7 +5328,7 @@ function renderDebtReceivableHomeV70(){
     </div>
 
     ${total>0?`
-      <div class="home-debt-main-v70">
+      <div class="home-debt-main-v70 home-debt-body-v70">
         <div class="donut-holder home-debt-donut-v70 home-donut-standard-v8121">
           <div class="donut" style="background:${debtReceivableGradientV70()}"></div>
           <div class="donut-label home-debt-center-v70">

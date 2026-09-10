@@ -15,6 +15,6 @@ ok(js.includes("logo:String(a.logo||'')"),'asset-logo-normalized');
 ok(js.includes("logo:String($('#assetLogoValueV8131')?.value||'')"),'asset-logo-saved');
 ok((js.match(/assetVisualHTML\(assetTab,x\)/g)||[]).length>=2,'asset-list-custom-logo');
 ok(css.includes('.asset-logo-preview-v8131'),'asset-logo-preview-css');
-ok(/versionCode\s+95/.test(gradle)&&/versionName\s+"8\.13\.1"/.test(gradle),'android-version-8.13.1');
-ok(workflow.includes('UangKu-v8.13.1-TEST-debug-apk'),'v8131-debug-artifact');
+ok(/versionCode\s+96/.test(gradle)&&/versionName\s+"8\.13\.2"/.test(gradle),'android-version-8.13.2');
+ok(workflow.includes('UangKu-v8.13.2-TEST-debug-apk'),'v8132-debug-artifact');
 ok(workflow.includes('node tests/asset-logo-v8131.js'),'asset-logo-test-workflow');

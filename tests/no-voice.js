@@ -24,4 +24,4 @@ ok(!java.includes('TextToSpeech'),'tts-removed');
 ok(!java.includes('startVoice()'),'native-start-voice-removed');
 ok(!workflow.includes('native-voice.js'),'native-voice-workflow-removed');
 ok(!workflow.includes('voice-recovery.js'),'voice-recovery-workflow-removed');
-ok(workflow.includes('UangKu-v8.13.1-TEST-debug-apk'),'v8131-debug-artifact');
+ok(workflow.includes('UangKu-v8.13.2-TEST-debug-apk'),'v8132-debug-artifact');
