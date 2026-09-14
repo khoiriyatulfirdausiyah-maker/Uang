@@ -1,53 +1,109 @@
 package com.uangku.app;
 
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 
-
 public class BillReminderReceiver extends BroadcastReceiver {
+
+    private static final String CHANNEL_ID = "bill_reminders";
+    private static final int NOTIFICATION_ID = 1001;
+
     @Override
     public void onReceive(Context context, Intent intent) {
-        String id = intent.getStringExtra("id");
-        String title = intent.getStringExtra("title");
-        String amount = intent.getStringExtra("amount");
-        String dueDate = intent.getStringExtra("dueDate");
-        boolean monthly = intent.getBooleanExtra("monthly", false);
-        int daysBefore = intent.getIntExtra("daysBefore", 0);
 
-        Intent open = new Intent(context, MainActivity.class);
-        PendingIntent pending = PendingIntent.getActivity(
-            context, 0, open,
-            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-        );
+        createNotificationChannel(context);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "bill_reminders")
-            .setSmallIcon(com.uangku.app.R.drawable.ic_stat_money)
-            .setContentTitle("Pengingat tagihan")
-            .setContentText((title == null ? "Tagihan" : title) + " • " + (amount == null ? "" : amount))
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setAutoCancel(true)
-            .setContentIntent(pending);
+        String title = intent != null
+                ? intent.getStringExtra("title")
+                : null;
 
-        NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        if (nm != null) {
-            nm.notify(id == null ? (int) System.currentTimeMillis() : (id.hashCode() & 0x7fffffff), builder.build());
+        String message = intent != null
+                ? intent.getStringExtra("message")
+                : null;
+
+        if (title == null || title.trim().isEmpty()) {
+            title = "Pengingat UangKu";
         }
 
-        if (id != null && dueDate != null) {
-            BillReminderScheduler.reminderDelivered(
+        if (message == null || message.trim().isEmpty()) {
+            message = "Ada tagihan yang perlu kamu cek.";
+        }
+
+        Intent openAppIntent = new Intent(context, MainActivity.class);
+
+        openAppIntent.setFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TOP
+        );
+
+        int pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            pendingIntentFlags |= PendingIntent.FLAG_IMMUTABLE;
+        }
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(
                 context,
-                id,
-                title,
-                amount,
-                dueDate,
-                monthly,
-                daysBefore
+                0,
+                openAppIntent,
+                pendingIntentFlags
+        );
+
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(context, CHANNEL_ID)
+                        .setSmallIcon(android.R.drawable.ic_dialog_info)
+                        .setContentTitle(title)
+                        .setContentText(message)
+                        .setStyle(
+                                new NotificationCompat.BigTextStyle()
+                                        .bigText(message)
+                        )
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        .setAutoCancel(true)
+                        .setContentIntent(pendingIntent);
+
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(
+                        Context.NOTIFICATION_SERVICE
+                );
+
+        if (notificationManager != null) {
+            notificationManager.notify(
+                    NOTIFICATION_ID,
+                    builder.build()
             );
+        }
+    }
+
+    private void createNotificationChannel(Context context) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "Pengingat Tagihan",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+
+            channel.setDescription(
+                    "Notifikasi pengingat tagihan dari UangKu"
+            );
+
+            NotificationManager notificationManager =
+                    (NotificationManager) context.getSystemService(
+                            Context.NOTIFICATION_SERVICE
+                    );
+
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
         }
     }
 }
