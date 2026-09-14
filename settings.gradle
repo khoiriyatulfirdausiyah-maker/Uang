@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "UangKu"
-include(":app")
+include ':app'

@@ -2,45 +2,41 @@ package com.uangku.app;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
-import android.webkit.JavascriptInterface;
+import android.view.Window;
+import android.webkit.GeolocationPermissions;
+import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.net.Uri;
-
-
-
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import androidx.annotation.NonNull;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends Activity {
+    private static final int FILE_CHOOSER_REQUEST = 101;
+    private static final int PERMISSION_REQUEST = 102;
     private WebView webView;
-    private static final int REQ_FILE = 102;
-    private static final int REQ_EXPORT = 103;
-    private ValueCallback<Uri[]> fileCallback;
-    private String pendingExportJson;
+    private ValueCallback<Uri[]> filePathCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestRuntimePermissions();
 
-        createNotificationChannel();
-
+        Window window = getWindow();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
 
         webView = new WebView(this);
         setContentView(webView);
@@ -49,209 +45,108 @@ public class MainActivity extends Activity {
         s.setJavaScriptEnabled(true);
         s.setDomStorageEnabled(true);
         s.setDatabaseEnabled(true);
+        s.setAllowFileAccess(true);
+        s.setAllowContentAccess(true);
+        s.setMediaPlaybackRequiresUserGesture(false);
         s.setCacheMode(WebSettings.LOAD_DEFAULT);
-        s.setSupportZoom(false);
+        s.setLoadsImagesAutomatically(true);
+        s.setUseWideViewPort(true);
+        s.setLoadWithOverviewMode(false);
         s.setBuiltInZoomControls(false);
         s.setDisplayZoomControls(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            s.setAllowFileAccessFromFileURLs(true);
+            s.setAllowUniversalAccessFromFileURLs(true);
+        }
 
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
-        webView.setVerticalScrollBarEnabled(false);
-
-        // UangKu hanya menjalankan UI lokal dari android_asset.
-        // File input tetap diizinkan, tetapi halaman lokal tidak boleh membaca URL/file lain
-        // secara bebas atau melakukan mixed-content network access.
-        s.setAllowFileAccess(true);
-        s.setAllowContentAccess(true);
-        s.setAllowFileAccessFromFileURLs(false);
-        s.setAllowUniversalAccessFromFileURLs(false);
-        s.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
-        s.setGeolocationEnabled(false);
-        s.setMediaPlaybackRequiresUserGesture(true);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            s.setSafeBrowsingEnabled(true);
-        }
 
         webView.setWebViewClient(new WebViewClient() {
-            private boolean handleUrl(Uri uri) {
-                if (uri == null) return true;
-
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                Uri uri = request.getUrl();
                 String scheme = uri.getScheme();
-                String url = uri.toString();
-
-                if ("file".equalsIgnoreCase(scheme) &&
-                    url.startsWith("file:///android_asset/")) {
-                    return false;
-                }
-
-                if ("http".equalsIgnoreCase(scheme) ||
-                    "https".equalsIgnoreCase(scheme) ||
-                    "mailto".equalsIgnoreCase(scheme) ||
-                    "tel".equalsIgnoreCase(scheme)) {
-                    try {
-                        Intent external = new Intent(Intent.ACTION_VIEW, uri);
-                        startActivity(external);
-                    } catch (Exception ignored) {}
+                if ("http".equals(scheme) || "https".equals(scheme)) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(intent);
                     return true;
                 }
+                return false;
+            }
+        });
 
-                // Blokir scheme lain agar JavascriptInterface tidak pernah terekspos
-                // pada konten selain halaman lokal UangKu.
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> callback, FileChooserParams params) {
+                if (filePathCallback != null) filePathCallback.onReceiveValue(null);
+                filePathCallback = callback;
+                Intent intent;
+                try {
+                    intent = params.createIntent();
+                } catch (Exception e) {
+                    intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("*/*");
+                }
+                Intent camera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                Intent chooser = Intent.createChooser(intent, "Pilih file / foto");
+                chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{camera});
+                startActivityForResult(chooser, FILE_CHOOSER_REQUEST);
                 return true;
             }
 
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                return handleUrl(request == null ? null : request.getUrl());
+            public void onPermissionRequest(final PermissionRequest request) {
+                runOnUiThread(() -> request.grant(request.getResources()));
             }
 
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                return handleUrl(url == null ? null : Uri.parse(url));
-            }
-        });
-        webView.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public boolean onShowFileChooser(WebView webView,
-                                             ValueCallback<Uri[]> filePathCallback,
-                                             FileChooserParams fileChooserParams) {
-                if (fileCallback != null) fileCallback.onReceiveValue(null);
-                fileCallback = filePathCallback;
-
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                String type = "*/*";
-                String[] accept = fileChooserParams.getAcceptTypes();
-                if (accept != null && accept.length > 0 && accept[0] != null && !accept[0].isEmpty()) {
-                    type = accept[0];
-                }
-                intent.setType(type);
-                try {
-                    startActivityForResult(Intent.createChooser(intent, "Pilih file"), REQ_FILE);
-                    return true;
-                } catch (Exception e) {
-                    fileCallback = null;
-                    return false;
-                }
+            public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
+                callback.invoke(origin, true, false);
             }
         });
 
-        webView.addJavascriptInterface(new NativeBridge(), "Native");
-        webView.loadUrl("file:///android_asset/index.html");
-
-        if (Build.VERSION.SDK_INT >= 33 &&
-            checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 300);
+        if (savedInstanceState == null) {
+            webView.loadUrl("file:///android_asset/index.html");
+        } else {
+            webView.restoreState(savedInstanceState);
         }
     }
 
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(
-                "bill_reminders",
-                "Pengingat Tagihan",
-                NotificationManager.IMPORTANCE_DEFAULT
-            );
-            channel.setDescription("Pengingat jatuh tempo tagihan UangKu");
-            NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            nm.createNotificationChannel(channel);
-        }
-    }
-
-    public class NativeBridge {
-        @JavascriptInterface
-        public void exportJson(String json) {
-            pendingExportJson = json;
-            runOnUiThread(() -> {
-                Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("application/json");
-                intent.putExtra(Intent.EXTRA_TITLE, "uangku-backup-" +
-                    new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date()) + ".json");
-                startActivityForResult(intent, REQ_EXPORT);
-            });
-        }
-
-        @JavascriptInterface
-        public void scheduleBill(String id, String title, String amount, String dueDate) {
-            BillReminderScheduler.schedule(
-                MainActivity.this,
-                id,
-                title,
-                amount,
-                dueDate,
-                false,
-                1,
-                true
-            );
-        }
-
-        @JavascriptInterface
-        public void scheduleBillAdvanced(String id, String title, String amount, String dueDate, boolean monthly, int daysBefore) {
-            BillReminderScheduler.schedule(
-                MainActivity.this,
-                id,
-                title,
-                amount,
-                dueDate,
-                monthly,
-                Math.max(0, daysBefore),
-                true
-            );
-        }
-
-        @JavascriptInterface
-        public void cancelBill(String id) {
-            BillReminderScheduler.cancel(MainActivity.this, id, true);
-        }
-
-    }
-
-
-
-
-    private void callJs(String js) {
-        runOnUiThread(() -> webView.evaluateJavascript(js, null));
+    private void requestRuntimePermissions() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return;
+        List<String> wanted = new ArrayList<>();
+        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) wanted.add(Manifest.permission.CAMERA);
+        if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) wanted.add(Manifest.permission.RECORD_AUDIO);
+        if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) wanted.add(Manifest.permission.POST_NOTIFICATIONS);
+        if (!wanted.isEmpty()) requestPermissions(wanted.toArray(new String[0]), PERMISSION_REQUEST);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-
-
-        if (requestCode == REQ_FILE) {
-            if (fileCallback == null) return;
-            Uri[] results = null;
-            if (resultCode == RESULT_OK && data != null && data.getData() != null) {
-                results = new Uri[]{data.getData()};
-            }
-            fileCallback.onReceiveValue(results);
-            fileCallback = null;
-            return;
-        }
-
-        if (requestCode == REQ_EXPORT) {
-            if (resultCode == RESULT_OK && data != null && data.getData() != null && pendingExportJson != null) {
-                try {
-                    java.io.OutputStream out = getContentResolver().openOutputStream(data.getData());
-                    if (out != null) {
-                        out.write(pendingExportJson.getBytes(java.nio.charset.StandardCharsets.UTF_8));
-                        out.close();
-                        callJs("window.onExportDone && window.onExportDone()");
-                    }
-                } catch (Exception e) {
-                    callJs("window.onExportError && window.onExportError()");
+        if (requestCode == FILE_CHOOSER_REQUEST) {
+            Uri[] result = null;
+            if (resultCode == RESULT_OK && data != null) {
+                String dataString = data.getDataString();
+                if (dataString != null) result = new Uri[]{Uri.parse(dataString)};
+                else if (data.getClipData() != null) {
+                    int count = data.getClipData().getItemCount();
+                    result = new Uri[count];
+                    for (int i = 0; i < count; i++) result[i] = data.getClipData().getItemAt(i).getUri();
                 }
             }
-            pendingExportJson = null;
+            if (filePathCallback != null) {
+                filePathCallback.onReceiveValue(result);
+                filePathCallback = null;
+            }
         }
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        webView.saveState(outState);
+        super.onSaveInstanceState(outState);
     }
 
     @Override

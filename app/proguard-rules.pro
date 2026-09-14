@@ -1,1 +1,1 @@
-# No custom rules required for this starter project.
+# UangKu currently does not require custom ProGuard rules.
