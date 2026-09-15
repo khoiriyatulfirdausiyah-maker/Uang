@@ -1,5 +1,6 @@
 package com.uangku.app;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -7,8 +8,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-
-import androidx.core.app.NotificationCompat;
 
 public class BillReminderReceiver extends BroadcastReceiver {
 
@@ -20,13 +19,13 @@ public class BillReminderReceiver extends BroadcastReceiver {
 
         createNotificationChannel(context);
 
-        String title = intent != null
-                ? intent.getStringExtra("title")
-                : null;
+        String title = null;
+        String message = null;
 
-        String message = intent != null
-                ? intent.getStringExtra("message")
-                : null;
+        if (intent != null) {
+            title = intent.getStringExtra("title");
+            message = intent.getStringExtra("message");
+        }
 
         if (title == null || title.trim().isEmpty()) {
             title = "Pengingat UangKu";
@@ -56,18 +55,24 @@ public class BillReminderReceiver extends BroadcastReceiver {
                 pendingIntentFlags
         );
 
-        NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(context, CHANNEL_ID)
-                        .setSmallIcon(android.R.drawable.ic_dialog_info)
-                        .setContentTitle(title)
-                        .setContentText(message)
-                        .setStyle(
-                                new NotificationCompat.BigTextStyle()
-                                        .bigText(message)
-                        )
-                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                        .setAutoCancel(true)
-                        .setContentIntent(pendingIntent);
+        Notification.Builder builder;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            builder = new Notification.Builder(context, CHANNEL_ID);
+        } else {
+            builder = new Notification.Builder(context);
+        }
+
+        builder
+                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setStyle(
+                        new Notification.BigTextStyle()
+                                .bigText(message)
+                )
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent);
 
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(
@@ -86,14 +91,15 @@ public class BillReminderReceiver extends BroadcastReceiver {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
-            NotificationChannel channel = new NotificationChannel(
-                    CHANNEL_ID,
-                    "Pengingat Tagihan",
-                    NotificationManager.IMPORTANCE_DEFAULT
-            );
+            NotificationChannel channel =
+                    new NotificationChannel(
+                            CHANNEL_ID,
+                            "Pengingat Tagihan",
+                            NotificationManager.IMPORTANCE_DEFAULT
+                    );
 
             channel.setDescription(
-                    "Notifikasi pengingat tagihan dari UangKu"
+                    "Notifikasi pengingat tagihan UangKu"
             );
 
             NotificationManager notificationManager =
