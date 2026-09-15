@@ -3508,7 +3508,15 @@ function monthAnalyticsV811(k=monthKey()){
    }
  });
 
- for(const rows of livingTxByCategory.values())rows.sort(compareTxDescV811);
+ for(const rows of livingTxByCategory.values()){
+    rows.sort((a,b)=>{
+      const dateCompare=String(b?.date||'').localeCompare(String(a?.date||''));
+      if(dateCompare!==0)return dateCompare;
+      const createdCompare=String(b?.createdAt||'').localeCompare(String(a?.createdAt||''));
+      if(createdCompare!==0)return createdCompare;
+      return String(b?.id||'').localeCompare(String(a?.id||''));
+    });
+  }
 
  let goalFromNonSavings=0,goalFromSavings=0,legacyGoalLinked=0;
  (state.goals||[]).forEach(g=>{
